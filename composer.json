@@ -1,0 +1,41 @@
+{
+    "name": "wobqqq/oc-ide-helper",
+    "description": "October CMS IDE Helper (extended laravel-ide-helper package)",
+    "homepage": "https://github.com/wobqqq/oc-ide-helper",
+    "keywords": [
+        "OctoberCms",
+        "PHP",
+        "IDE"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Sergey Zakharevich",
+            "email": "wobqqq@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^7.1 || ^8.0",
+        "barryvdh/laravel-ide-helper": "^2.5.0"
+    },
+    "require-dev": {
+        "illuminate/database": "^10.38 || ^11",
+        "october/rain": "^3.6",
+        "friendsofphp/php-cs-fixer": "^3",
+        "phpstan/phpstan": "^1.10"
+    },
+    "autoload": {
+        "psr-4": {
+            "Wobqqq\\IdeHelper\\": "src/"
+        }
+    },
+    "scripts": {
+        "code.cs-fixer": "php-cs-fixer --diff fix",
+        "code.phpstan": "vendor/bin/phpstan analyse --memory-limit=512M",
+        "code.fix_and_analyse": [
+            "@code.cs-fixer",
+            "@code.phpstan"
+        ]
+    }
+}
