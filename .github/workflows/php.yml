@@ -21,4 +21,4 @@ jobs:
       run: composer install --prefer-dist --no-progress
 
     - name: Code debug
-      run: composer project.debug
+      run: composer code.debug
