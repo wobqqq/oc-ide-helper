@@ -33,7 +33,7 @@
     "scripts": {
         "code.cs-fixer": "php-cs-fixer --diff fix",
         "code.phpstan": "vendor/bin/phpstan analyse --memory-limit=512M",
-        "code.fix_and_analyse": [
+        "project.debug": [
             "@code.cs-fixer",
             "@code.phpstan"
         ]
