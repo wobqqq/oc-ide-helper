@@ -23,7 +23,8 @@
         "illuminate/database": "^10.38 || ^11",
         "october/rain": "^3.6",
         "friendsofphp/php-cs-fixer": "^3",
-        "phpstan/phpstan": "^1.10"
+        "phpstan/phpstan": "^1.10",
+        "enlightn/security-checker": "^2.0.0"
     },
     "autoload": {
         "psr-4": {
@@ -33,9 +34,18 @@
     "scripts": {
         "code.cs-fixer": "php-cs-fixer --diff fix",
         "code.phpstan": "vendor/bin/phpstan analyse --memory-limit=512M",
-        "project.debug": [
-            "@code.cs-fixer",
-            "@code.phpstan"
+        "code.fix": [
+            "@code.cs-fixer"
+        ],
+        "code.analyse": [
+            "composer validate --strict",
+            "composer diagnose",
+            "@code.phpstan",
+            "security-checker security:check ./composer.lock"
+        ],
+        "code.debug": [
+            "@code.fix",
+            "@code.analyse"
         ]
     }
 }
