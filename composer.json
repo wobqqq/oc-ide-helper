@@ -24,7 +24,7 @@
         "october/rain": "^3.6",
         "friendsofphp/php-cs-fixer": "^3",
         "phpstan/phpstan": "^1.10",
-        "enlightn/security-checker": "^2.0.0"
+        "enlightn/security-checker": "^1.11.0"
     },
     "autoload": {
         "psr-4": {
