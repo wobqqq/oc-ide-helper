@@ -39,7 +39,6 @@
         ],
         "code.analyse": [
             "composer validate --strict",
-            "composer diagnose",
             "@code.phpstan",
             "security-checker security:check ./composer.lock"
         ],
