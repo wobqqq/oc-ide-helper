@@ -17,7 +17,7 @@ final class ModelJsonableService
         foreach ($columns as $column) {
             $isNullable = Tools::isNullable($modelsCommand, $column);
 
-            $modelsCommand->setProperty($column, 'array', true, true, '', $isNullable);
+            $modelsCommand->setProperty($column, 'array<array-key, mixed>', true, true, '', $isNullable);
         }
     }
 }
