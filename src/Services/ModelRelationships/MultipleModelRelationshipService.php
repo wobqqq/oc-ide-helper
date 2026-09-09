@@ -24,7 +24,11 @@ final class MultipleModelRelationshipService implements ModelRelationshipService
         RelationshipModelConfigDto $relationshipModelConfigDto
     ): void {
         $relationshipClass = Tools::getCollectionClass($parameters);
-        $methodType = $modelsCommand->getMethodType($model, $relationshipModelConfigDto->getRelationshipType());
+        $methodType = Tools::getClassNameInDestinationFile(
+            $modelsCommand,
+            $model,
+            $relationshipModelConfigDto->getRelationshipType()
+        );
 
         $modelsCommand->setProperty(
             $relationship,

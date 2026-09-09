@@ -24,7 +24,11 @@ final class SingleModelRelationshipService implements ModelRelationshipServiceIn
         RelationshipModelConfigDto $relationshipModelConfigDto
     ): void {
         $relationshipClass = Tools::getModelClass($parameters);
-        $methodType = $modelsCommand->getMethodType($model, $relationshipModelConfigDto->getRelationshipType());
+        $methodType = Tools::getClassNameInDestinationFile(
+            $modelsCommand,
+            $model,
+            $relationshipModelConfigDto->getRelationshipType()
+        );
 
         $modelsCommand->setProperty(
             $relationship,

@@ -8,6 +8,7 @@ use Arr;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use October\Rain\Database\Collection;
 use ReflectionClass;
+use ReflectionMethod;
 use Wobqqq\IdeHelper\Exceptions\IdeHelperException;
 
 final class Tools
@@ -54,6 +55,38 @@ final class Tools
         $collectionClass = self::getClassFormat(Collection::class);
 
         return sprintf('%s<int, %s>', $collectionClass, $modelClass);
+    }
+
+    /**
+     * The class name as it has to be written into the model file: the short name when the
+     * model imports the class, the fully qualified one otherwise. ModelsCommand keeps that
+     * decision to itself, and getMethodType() - the only public way in - hard-codes the
+     * "Builder<static>|Model" shape of a query scope onto it, which no relation returns.
+     *
+     * @param object $model
+     */
+    public static function getClassNameInDestinationFile(
+        ModelsCommand $modelsCommand,
+        $model,
+        string $class
+    ): string {
+        $method = new ReflectionMethod($modelsCommand, 'getClassNameInDestinationFile');
+        $method->setAccessible(true);
+
+        $className = $method->invoke($modelsCommand, $model, $class);
+
+        return is_string($className) ? $className : self::getClassFormat($class);
+    }
+
+    /**
+     * The column a relation reads its own key from, the way October derives it:
+     * snake_case(relation name) . '_id'.
+     */
+    public static function getKeyColumnName(string $relationship): string
+    {
+        $columnName = (string)preg_replace('/(?<!^)([A-Z])/', '_$1', $relationship);
+
+        return sprintf('%s_id', strtolower($columnName));
     }
 
     public static function isNullable(ModelsCommand $modelsCommand, ?string $column): bool
