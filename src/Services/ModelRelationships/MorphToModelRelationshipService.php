@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Wobqqq\IdeHelper\Services\ModelRelationships;
 
+use Arr;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use October\Rain\Database\Model;
 use Wobqqq\IdeHelper\Dto\RelationshipModelConfigDto;
@@ -22,8 +23,12 @@ final class MorphToModelRelationshipService implements ModelRelationshipServiceI
         RelationshipModelConfigDto $relationshipModelConfigDto
     ): void {
         $relationshipClass = Tools::getClassFormat(Model::class);
-        $methodType = $modelsCommand->getMethodType($model, $relationshipModelConfigDto->getRelationshipType());
-        $relationshipColumnName = sprintf('%s_id', strtolower($relationship));
+        $methodType = Tools::getClassNameInDestinationFile(
+            $modelsCommand,
+            $model,
+            $relationshipModelConfigDto->getRelationshipType()
+        );
+        $relationshipColumnName = $this->getRelationshipColumnName($relationship, $parameters);
         $isNullable = Tools::isNullable($modelsCommand, $relationshipColumnName);
 
         $modelsCommand->setProperty(
@@ -35,5 +40,25 @@ final class MorphToModelRelationshipService implements ModelRelationshipServiceI
             $isNullable
         );
         $modelsCommand->setMethod($relationship, $methodType);
+    }
+
+    /**
+     * The id column of the polymorphic relation: the one named in the relation definition,
+     * or - the way October\Rain\Database\Concerns\HasRelationships::morphTo() derives it -
+     * snake_case(name) . '_id', with the relation name standing in for a missing name.
+     *
+     * @param mixed $parameters
+     */
+    protected function getRelationshipColumnName(string $relationship, $parameters): string
+    {
+        $id = is_array($parameters) ? Arr::get($parameters, 'id') : null;
+
+        if (is_string($id) && $id !== '') {
+            return $id;
+        }
+
+        $name = is_array($parameters) ? Arr::get($parameters, 'name') : null;
+
+        return Tools::getKeyColumnName(is_string($name) && $name !== '' ? $name : $relationship);
     }
 }

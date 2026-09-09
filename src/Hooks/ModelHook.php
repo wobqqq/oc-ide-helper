@@ -9,6 +9,7 @@ use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Illuminate\Database\Eloquent\Model;
 use Wobqqq\IdeHelper\Exceptions\IdeHelperException;
 use Wobqqq\IdeHelper\Services\ModelBuilderGenericService;
+use Wobqqq\IdeHelper\Services\ModelInheritedMethodService;
 use Wobqqq\IdeHelper\Services\ModelJsonableService;
 use Wobqqq\IdeHelper\Services\ModelRelationships\ModelRelationshipService;
 
@@ -23,14 +24,19 @@ final class ModelHook implements ModelHookInterface
     /** @var ModelBuilderGenericService */
     private $modelBuilderGenericService;
 
+    /** @var ModelInheritedMethodService */
+    private $modelInheritedMethodService;
+
     public function __construct(
         ModelRelationshipService $modelRelationshipService,
         ModelJsonableService $modelJsonableService,
-        ModelBuilderGenericService $modelBuilderGenericService
+        ModelBuilderGenericService $modelBuilderGenericService,
+        ModelInheritedMethodService $modelInheritedMethodService
     ) {
         $this->modelRelationshipService = $modelRelationshipService;
         $this->modelJsonableService = $modelJsonableService;
         $this->modelBuilderGenericService = $modelBuilderGenericService;
+        $this->modelInheritedMethodService = $modelInheritedMethodService;
     }
 
     /**
@@ -42,5 +48,6 @@ final class ModelHook implements ModelHookInterface
         $this->modelRelationshipService->serve($command, $model);
         $this->modelJsonableService->serve($command, $model);
         $this->modelBuilderGenericService->serve($command);
+        $this->modelInheritedMethodService->serve($command, $model);
     }
 }

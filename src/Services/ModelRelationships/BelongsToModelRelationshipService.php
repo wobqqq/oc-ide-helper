@@ -25,8 +25,12 @@ final class BelongsToModelRelationshipService implements ModelRelationshipServic
         RelationshipModelConfigDto $relationshipModelConfigDto
     ): void {
         $relationshipClass = Tools::getModelClass($parameters);
-        $methodType = $modelsCommand->getMethodType($model, $relationshipModelConfigDto->getRelationshipType());
-        $relationshipColumnName = $this->getRelationshipColumnName($parameters);
+        $methodType = Tools::getClassNameInDestinationFile(
+            $modelsCommand,
+            $model,
+            $relationshipModelConfigDto->getRelationshipType()
+        );
+        $relationshipColumnName = $this->getRelationshipColumnName($relationship, $parameters);
         $isNullable = Tools::isNullable($modelsCommand, $relationshipColumnName);
 
         $modelsCommand->setProperty(
@@ -41,29 +45,20 @@ final class BelongsToModelRelationshipService implements ModelRelationshipServic
     }
 
     /**
+     * The column the relation reads its key from: the one named in the relation
+     * definition, or - the way October\Rain\Database\Concerns\HasRelationships::belongsTo()
+     * derives it - snake_case(relation name) . '_id'.
+     *
      * @param mixed $parameters
-     * @throws IdeHelperException
      */
-    protected function getRelationshipColumnName($parameters): string
+    protected function getRelationshipColumnName(string $relationship, $parameters): string
     {
-        $relationshipColumnName = is_array($parameters) ? Arr::get($parameters, 'key') : null;
-        $relationshipColumnName = is_string($relationshipColumnName) ? $relationshipColumnName : Model::class;
+        $key = is_array($parameters) ? Arr::get($parameters, 'key') : null;
 
-        if (!empty($relationshipColumnName)) {
-            return $relationshipColumnName;
+        if (is_string($key) && $key !== '') {
+            return $key;
         }
 
-        $modelClass = Tools::getModelClass($parameters);
-
-        $relationshipColumnName = (string)substr($modelClass, strrpos($modelClass, '\\') + 1);
-        $relationshipColumnName = (string)preg_replace(
-            '/(?<!^)([A-Z])/',
-            '_$1',
-            $relationshipColumnName
-        );
-        $relationshipColumnName = strtolower($relationshipColumnName);
-        $relationshipColumnName = sprintf('%s_id', $relationshipColumnName);
-
-        return $relationshipColumnName;
+        return Tools::getKeyColumnName($relationship);
     }
 }
