@@ -3,9 +3,9 @@
 [![CI](https://github.com/wobqqq/oc-ide-helper/actions/workflows/ci.yml/badge.svg)](https://github.com/wobqqq/oc-ide-helper/actions/workflows/ci.yml)
 [![Latest version](https://img.shields.io/packagist/v/wobqqq/oc-ide-helper)](https://packagist.org/packages/wobqqq/oc-ide-helper)
 [![Downloads](https://img.shields.io/packagist/dt/wobqqq/oc-ide-helper)](https://packagist.org/packages/wobqqq/oc-ide-helper)
-[![PHP](https://img.shields.io/packagist/dependency-v/wobqqq/oc-ide-helper/php)](composer.json)
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%20max-brightgreen)](phpstan.neon.dist)
-[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE.md)
+[![PHP](https://img.shields.io/packagist/dependency-v/wobqqq/oc-ide-helper/php)](https://github.com/wobqqq/oc-ide-helper/blob/main/composer.json)
+[![PHPStan](https://img.shields.io/badge/PHPStan-level%20max-brightgreen)](https://github.com/wobqqq/oc-ide-helper/blob/main/phpstan.neon.dist)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://github.com/wobqqq/oc-ide-helper/blob/main/LICENSE.md)
 
 **Complete PHPDocs for October CMS models, directly from the source.**
 
@@ -101,8 +101,8 @@ make test.coverage  # Pest with coverage (90 % minimum)
 make ready          # everything above
 ```
 
-The tests run the real `ide-helper:models` over October models covering every relation type (`tests/Fixtures/Models`) and check the docblocks it writes. GitHub Actions runs them on every pull request, on the latest and on the lowest supported dependencies, plus a syntax check on PHP 8.2. See [CHANGELOG.md](CHANGELOG.md) for the changes of each version and [SECURITY.md](SECURITY.md) to report a vulnerability.
+The tests run the real `ide-helper:models` over October models covering every relation type (`tests/Fixtures/Models`) and check the docblocks it writes. GitHub Actions runs them on every pull request, on the latest and on the lowest supported dependencies, plus a syntax check on PHP 8.2. See [CHANGELOG.md](https://github.com/wobqqq/oc-ide-helper/blob/main/CHANGELOG.md) for the changes of each version and [SECURITY.md](https://github.com/wobqqq/oc-ide-helper/blob/main/SECURITY.md) to report a vulnerability.
 
 ## License
 
-The IDE Helper for October CMS is open-sourced software licensed under the [MIT license](LICENSE.md).
+The IDE Helper for October CMS is open-sourced software licensed under the [MIT license](https://github.com/wobqqq/oc-ide-helper/blob/main/LICENSE.md).
