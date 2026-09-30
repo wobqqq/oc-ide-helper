@@ -51,6 +51,16 @@ make ready          # all of the above
 
 It is a development tool, but it runs inside the project: it never writes outside the files laravel-ide-helper is asked to write, never executes model code beyond instantiating the model, and never reads `.env`, `auth.json` or other secrets. A dependency advisory is fixed like in production code.
 
+## Git workflow
+
+- `main` is protected: **never push to it and never force-push.** Every change goes through a pull request:
+  1. branch off the latest `main`, named after the change (`fix/…`, `feat/…`, `chore/…`, `docs/…`);
+  2. commit on the branch and `git push -u origin <branch>`;
+  3. open a pull request with the template filled in (what changes, what it means for sites that upgrade);
+  4. merge only once CI is green, then delete the branch.
+- A release is a tag pushed on a merged commit of `main`, with its entry in CHANGELOG.md; the tag is the only thing pushed outside a pull request.
+- Code, comments, commit messages, pull requests, issues and documentation are written in **English**.
+
 ## Conventions
 
 - `declare(strict_types=1);` in every PHP file; PSR-12 via php-cs-fixer (`(int)$x` without a space, imported classes).
