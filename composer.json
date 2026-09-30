@@ -11,7 +11,11 @@
         "phpstan",
         "autocomplete",
         "phpstorm",
-        "laravel"
+        "laravel",
+        "october-cms",
+        "docblock",
+        "code-generation",
+        "developer-tools"
     ],
     "authors": [
         {
@@ -24,6 +28,7 @@
     "support": {
         "issues": "https://github.com/wobqqq/oc-ide-helper/issues",
         "source": "https://github.com/wobqqq/oc-ide-helper",
+        "docs": "https://github.com/wobqqq/oc-ide-helper#readme",
         "security": "https://github.com/wobqqq/oc-ide-helper/security/policy"
     },
     "require": {
