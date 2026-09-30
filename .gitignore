@@ -1,7 +1,9 @@
-/.idea
-
-/.php-cs-fixer.php
+/vendor/
+/.phpunit.cache/
 /.php-cs-fixer.cache
-
-/vendor
-/composer.lock
+/.php-cs-fixer.php
+/coverage/
+/.idea/
+/.vscode/
+/.claude/settings.local.json
+.DS_Store

@@ -1,50 +1,109 @@
 {
     "name": "wobqqq/oc-ide-helper",
-    "description": "October CMS IDE Helper (extended laravel-ide-helper package)",
-    "homepage": "https://github.com/wobqqq/oc-ide-helper",
-    "keywords": [
-        "OctoberCms",
-        "PHP",
-        "IDE"
-    ],
-    "type": "library",
+    "description": "IDE Helper for October CMS: complete PHPDocs for October models, their relations and jsonable attributes (extends barryvdh/laravel-ide-helper)",
     "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "october",
+        "octobercms",
+        "ide-helper",
+        "phpdoc",
+        "phpstan",
+        "autocomplete",
+        "phpstorm",
+        "laravel"
+    ],
     "authors": [
         {
             "name": "Sergey Zakharevich",
-            "email": "wobqqq@gmail.com"
+            "email": "wobqqq@gmail.com",
+            "homepage": "https://github.com/wobqqq"
         }
     ],
+    "homepage": "https://github.com/wobqqq/oc-ide-helper",
+    "support": {
+        "issues": "https://github.com/wobqqq/oc-ide-helper/issues",
+        "source": "https://github.com/wobqqq/oc-ide-helper",
+        "security": "https://github.com/wobqqq/oc-ide-helper/security/policy"
+    },
     "require": {
-        "php": "^7.1 || ^8.0",
+        "php": "^8.2",
         "barryvdh/laravel-ide-helper": "^3.5.5"
     },
     "require-dev": {
-        "illuminate/database": "^10.38 || ^11",
-        "october/rain": "^3.6",
-        "friendsofphp/php-cs-fixer": "^3",
-        "phpstan/phpstan": "^1.10",
-        "enlightn/security-checker": "^1.11.0"
+        "ergebnis/composer-normalize": "^2.48",
+        "friendsofphp/php-cs-fixer": "^3.88",
+        "october/rain": "^4.4",
+        "orchestra/testbench": "^10.6",
+        "pestphp/pest": "^4.1",
+        "phpstan/extension-installer": "^1.4",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "rector/rector": "^2.2"
+    },
+    "suggest": {
+        "october/rain": "The October CMS library the generated docblocks describe (installed with October CMS 3.x and 4.x)"
     },
     "autoload": {
         "psr-4": {
             "Wobqqq\\IdeHelper\\": "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "Wobqqq\\IdeHelper\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "composer/installers": false,
+            "ergebnis/composer-normalize": true,
+            "pestphp/pest-plugin": true,
+            "phpstan/extension-installer": true
+        },
+        "platform": {
+            "php": "8.4.99"
+        },
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Wobqqq\\IdeHelper\\IdeHelperServiceProvider"
+            ]
+        }
+    },
     "scripts": {
-        "code.cs-fixer": "php-cs-fixer --diff fix",
-        "code.phpstan": "vendor/bin/phpstan analyse --memory-limit=512M",
+        "code.check": [
+            "@composer validate --strict",
+            "@composer normalize --dry-run",
+            "@composer audit --abandoned=report",
+            "@code.lint",
+            "@code.yaml.check",
+            "@code.cs.check",
+            "@code.rector.check",
+            "@code.stan"
+        ],
+        "code.cs.check": "php-cs-fixer fix --diff --dry-run",
+        "code.cs.fix": "php-cs-fixer fix --diff",
         "code.fix": [
-            "@code.cs-fixer"
+            "@composer normalize --no-update-lock",
+            "@code.cs.fix",
+            "@code.rector.fix"
         ],
-        "code.analyse": [
-            "composer validate --strict",
-            "@code.phpstan",
-            "security-checker security:check ./composer.lock"
-        ],
-        "code.debug": [
+        "code.lint": "find src config tests -name '*.php' -print0 | xargs -0 -n1 -P4 php -l > /dev/null",
+        "code.rector.check": "rector process --dry-run",
+        "code.rector.fix": "rector process",
+        "code.stan": "phpstan analyse --memory-limit=1G",
+        "code.yaml.check": "yaml-lint .github/",
+        "ready": [
             "@code.fix",
-            "@code.analyse"
-        ]
+            "@code.check",
+            "@test.coverage"
+        ],
+        "test": "pest",
+        "test.coverage": "@php -d pcov.enabled=1 -d pcov.directory=src vendor/bin/pest --coverage --min=90",
+        "test.mutate": "@php -d pcov.enabled=1 -d pcov.directory=src vendor/bin/pest --mutate --parallel --min=70"
     }
 }

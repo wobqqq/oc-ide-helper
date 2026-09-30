@@ -1,0 +1,55 @@
+<?php
+
+// October declares the relation definitions and the jsonable attributes as a bare
+// `array`; the precise element types let a model declare its own without failing
+// PHPStan's property.phpDocType check.
+
+namespace October\Rain\Database\Concerns {
+    trait HasRelationships
+    {
+    /** @var array<string, mixed> */
+        public $hasOne;
+    
+        /** @var array<string, mixed> */
+        public $hasMany;
+    
+        /** @var array<string, mixed> */
+        public $belongsTo;
+    
+        /** @var array<string, mixed> */
+        public $belongsToMany;
+    
+        /** @var array<string, mixed> */
+        public $morphTo;
+    
+        /** @var array<string, mixed> */
+        public $morphOne;
+    
+        /** @var array<string, mixed> */
+        public $morphMany;
+    
+        /** @var array<string, mixed> */
+        public $morphToMany;
+    
+        /** @var array<string, mixed> */
+        public $morphedByMany;
+    
+        /** @var array<string, mixed> */
+        public $attachOne;
+    
+        /** @var array<string, mixed> */
+        public $attachMany;
+    
+        /** @var array<string, mixed> */
+        public $hasManyThrough;
+    
+        /** @var array<string, mixed> */
+        public $hasOneThrough;
+    }
+
+    trait HasJsonable
+    {
+        /** @var array<int, string> */
+        protected $jsonable;
+    }
+}
