@@ -18,7 +18,6 @@ final class ModelBuilderGenericService
     public function serve(ModelsCommand $modelsCommand): void
     {
         $methodsProperty = new ReflectionProperty(ModelsCommand::class, 'methods');
-        $methodsProperty->setAccessible(true);
 
         /** @var array<string, array{type?: string, arguments?: array<int, string>, comment?: string}> $methods */
         $methods = $methodsProperty->getValue($modelsCommand);

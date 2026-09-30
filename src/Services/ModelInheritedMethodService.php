@@ -31,7 +31,6 @@ final class ModelInheritedMethodService
     public function serve(ModelsCommand $modelsCommand, Model $model): void
     {
         $methodsProperty = new ReflectionProperty(ModelsCommand::class, 'methods');
-        $methodsProperty->setAccessible(true);
 
         /** @var array<string, array<string, mixed>> $methods */
         $methods = $methodsProperty->getValue($modelsCommand);
@@ -53,12 +52,12 @@ final class ModelInheritedMethodService
 
         // A trait method is reported as declared by the class using it, so the model
         // itself is not a class "of its own" for this purpose.
-        if ($declaringClass === get_class($model)) {
+        if ($declaringClass === $model::class) {
             return false;
         }
 
         foreach (self::FRAMEWORK_NAMESPACES as $namespace) {
-            if (strpos($declaringClass, $namespace) === 0) {
+            if (str_starts_with($declaringClass, $namespace)) {
                 return false;
             }
         }

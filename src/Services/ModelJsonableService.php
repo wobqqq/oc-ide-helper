@@ -15,6 +15,10 @@ final class ModelJsonableService
         $columns = $model->getJsonable();
 
         foreach ($columns as $column) {
+            if (!is_string($column) || $column === '') {
+                continue;
+            }
+
             $isNullable = Tools::isNullable($modelsCommand, $column);
 
             $modelsCommand->setProperty($column, 'array<array-key, mixed>', true, true, '', $isNullable);

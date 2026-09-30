@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Wobqqq\IdeHelper\Tools;
 
-use Arr;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use October\Rain\Database\Collection;
 use ReflectionClass;
@@ -15,25 +14,20 @@ final class Tools
 {
     public static function getClassFormat(string $class): string
     {
-        $class = preg_replace('/^\\+/', '', $class);
-        $class = sprintf('\\%s', $class);
-
-        return $class;
+        return '\\' . ltrim($class, '\\');
     }
 
     /**
+     * The related class of a relation definition: the definition itself, or its first
+     * positional element when it is an array, as October reads it.
+     *
      * @param mixed $parameters
+     *
      * @throws IdeHelperException
      */
     public static function getModelClass($parameters): string
     {
-        $modelClass = $parameters;
-
-        if (is_array($parameters)) {
-            $modelClass = Arr::first($parameters, static function ($item) {
-                return is_string($item);
-            });
-        }
+        $modelClass = is_array($parameters) ? ($parameters[0] ?? null) : $parameters;
 
         $modelClass = is_string($modelClass) ? $modelClass : '';
         $modelClass = self::getClassFormat($modelClass);
@@ -47,6 +41,7 @@ final class Tools
 
     /**
      * @param mixed $parameters
+     *
      * @throws IdeHelperException
      */
     public static function getCollectionClass($parameters): string
@@ -71,7 +66,6 @@ final class Tools
         string $class
     ): string {
         $method = new ReflectionMethod($modelsCommand, 'getClassNameInDestinationFile');
-        $method->setAccessible(true);
 
         $className = $method->invoke($modelsCommand, $model, $class);
 
@@ -91,19 +85,16 @@ final class Tools
 
     public static function isNullable(ModelsCommand $modelsCommand, ?string $column): bool
     {
-        if (empty($column)) {
+        if ($column === null || $column === '') {
             return false;
         }
 
         $reflectionClass = new ReflectionClass($modelsCommand);
 
         $property = $reflectionClass->getProperty('nullableColumns');
-        $property->setAccessible(true);
 
         $nullableColumns = $property->getValue($modelsCommand);
         $nullableColumns = is_array($nullableColumns) ? $nullableColumns : [];
-        $nullableColumns = array_filter($nullableColumns);
-
-        return isset($nullableColumns[$column]);
+        return ($nullableColumns[$column] ?? false) !== false && $nullableColumns[$column] !== null;
     }
 }

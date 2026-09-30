@@ -14,6 +14,7 @@ final class MultipleModelRelationshipService implements ModelRelationshipService
 {
     /**
      * @param mixed $parameters
+     *
      * @throws IdeHelperException
      */
     public function serve(

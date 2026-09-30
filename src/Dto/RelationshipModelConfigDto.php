@@ -4,30 +4,10 @@ declare(strict_types=1);
 
 namespace Wobqqq\IdeHelper\Dto;
 
-final class RelationshipModelConfigDto
+final readonly class RelationshipModelConfigDto
 {
-    /** @var string */
-    private $relationshipType;
-
-    /** @var string */
-    private $service;
-
-    /** @var bool */
-    private $isRead;
-
-    /** @var bool */
-    private $isWrite;
-
-    /** @var bool */
-    private $isNullable;
-
-    public function __construct(string $relationshipType, string $service, bool $read, bool $write, bool $nullable)
+    public function __construct(private string $relationshipType, private string $service, private bool $isRead, private bool $isWrite, private bool $isNullable)
     {
-        $this->relationshipType = $relationshipType;
-        $this->service = $service;
-        $this->isRead = $read;
-        $this->isWrite = $write;
-        $this->isNullable = $nullable;
     }
 
     public function getRelationshipType(): string

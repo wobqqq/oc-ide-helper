@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Wobqqq\IdeHelper\Services\ModelRelationships;
 
-use Arr;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Illuminate\Support\Arr;
 use October\Rain\Database\Model;
 use Wobqqq\IdeHelper\Dto\RelationshipModelConfigDto;
 use Wobqqq\IdeHelper\Exceptions\IdeHelperException;
@@ -15,6 +15,7 @@ final class BelongsToModelRelationshipService implements ModelRelationshipServic
 {
     /**
      * @param mixed $parameters
+     *
      * @throws IdeHelperException
      */
     public function serve(

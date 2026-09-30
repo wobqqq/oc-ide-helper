@@ -7,47 +7,34 @@ namespace Wobqqq\IdeHelper\Hooks;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Barryvdh\LaravelIdeHelper\Contracts\ModelHookInterface;
 use Illuminate\Database\Eloquent\Model;
-use Wobqqq\IdeHelper\Exceptions\IdeHelperException;
+use October\Rain\Database\Model as OctoberModel;
 use Wobqqq\IdeHelper\Services\ModelBuilderGenericService;
 use Wobqqq\IdeHelper\Services\ModelInheritedMethodService;
 use Wobqqq\IdeHelper\Services\ModelJsonableService;
 use Wobqqq\IdeHelper\Services\ModelRelationships\ModelRelationshipService;
 
-final class ModelHook implements ModelHookInterface
+final readonly class ModelHook implements ModelHookInterface
 {
-    /** @var ModelRelationshipService */
-    private $modelRelationshipService;
-
-    /** @var ModelJsonableService */
-    private $modelJsonableService;
-
-    /** @var ModelBuilderGenericService */
-    private $modelBuilderGenericService;
-
-    /** @var ModelInheritedMethodService */
-    private $modelInheritedMethodService;
-
     public function __construct(
-        ModelRelationshipService $modelRelationshipService,
-        ModelJsonableService $modelJsonableService,
-        ModelBuilderGenericService $modelBuilderGenericService,
-        ModelInheritedMethodService $modelInheritedMethodService
+        private ModelRelationshipService $modelRelationshipService,
+        private ModelJsonableService $modelJsonableService,
+        private ModelBuilderGenericService $modelBuilderGenericService,
+        private ModelInheritedMethodService $modelInheritedMethodService,
     ) {
-        $this->modelRelationshipService = $modelRelationshipService;
-        $this->modelJsonableService = $modelJsonableService;
-        $this->modelBuilderGenericService = $modelBuilderGenericService;
-        $this->modelInheritedMethodService = $modelInheritedMethodService;
     }
 
     /**
-     * @throws IdeHelperException
+     * The relation, jsonable and builder corrections only apply to October models; a plain
+     * Eloquent model in the scanned directories keeps what laravel-ide-helper writes.
      */
     public function run(ModelsCommand $command, Model $model): void
     {
-        /** @var \Model $model */
-        $this->modelRelationshipService->serve($command, $model);
-        $this->modelJsonableService->serve($command, $model);
-        $this->modelBuilderGenericService->serve($command);
+        if ($model instanceof OctoberModel) {
+            $this->modelRelationshipService->serve($command, $model);
+            $this->modelJsonableService->serve($command, $model);
+            $this->modelBuilderGenericService->serve($command);
+        }
+
         $this->modelInheritedMethodService->serve($command, $model);
     }
 }

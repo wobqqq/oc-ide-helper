@@ -14,6 +14,7 @@ final class SingleModelRelationshipService implements ModelRelationshipServiceIn
 {
     /**
      * @param mixed $parameters
+     *
      * @throws IdeHelperException
      */
     public function serve(

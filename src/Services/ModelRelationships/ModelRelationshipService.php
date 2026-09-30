@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Wobqqq\IdeHelper\Services\ModelRelationships;
 
-use Arr;
 use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Contracts\Foundation\Application;
@@ -25,8 +24,9 @@ use Wobqqq\IdeHelper\Dto\RelationshipModelConfigDto;
 use Wobqqq\IdeHelper\Exceptions\IdeHelperException;
 use Wobqqq\IdeHelper\Tools\Tools;
 
-final class ModelRelationshipService
+final readonly class ModelRelationshipService
 {
+    /** @var array<string, array{service: class-string<ModelRelationshipServiceInterface>, relationship_type: class-string}> */
     private const RELATIONSHIPS = [
         'attachOne' => [
             'service' => SingleModelRelationshipService::class,
@@ -61,7 +61,7 @@ final class ModelRelationshipService
             'relationship_type' => HasManyThrough::class,
         ],
         'morphOne' => [
-            'service' => MultipleModelRelationshipService::class,
+            'service' => SingleModelRelationshipService::class,
             'relationship_type' => MorphOne::class,
         ],
         'morphMany' => [
@@ -72,29 +72,29 @@ final class ModelRelationshipService
             'service' => MultipleModelRelationshipService::class,
             'relationship_type' => MorphToMany::class,
         ],
+        'morphedByMany' => [
+            'service' => MultipleModelRelationshipService::class,
+            'relationship_type' => MorphToMany::class,
+        ],
         'morphTo' => [
             'service' => MorphToModelRelationshipService::class,
             'relationship_type' => MorphTo::class,
         ],
     ];
 
-    /** @var Application */
-    private $app;
-
-    public function __construct(Application $app)
+    public function __construct(private Application $app)
     {
-        $this->app = $app;
     }
 
     /**
-     * @throws IdeHelperException|BindingResolutionException
+     * @throws BindingResolutionException
      */
     public function serve(ModelsCommand $modelsCommand, Model $model): void
     {
         foreach (self::RELATIONSHIPS as $relationType => $config) {
-            $relationships = $model->{$relationType};
+            $relationships = $model->{$relationType} ?? [];
 
-            if (empty($relationships)) {
+            if (!is_array($relationships) || $relationships === []) {
                 continue;
             }
 
@@ -104,57 +104,40 @@ final class ModelRelationshipService
             /** @var string $relationship */
             /** @var mixed $parameters */
             foreach ($relationships as $relationship => $parameters) {
-                $service->serve($modelsCommand, $model, $relationship, $parameters, $relationshipModelConfigDto);
+                try {
+                    $service->serve($modelsCommand, $model, $relationship, $parameters, $relationshipModelConfigDto);
+                } catch (IdeHelperException $e) {
+                    $modelsCommand->warn(sprintf(
+                        '%s::$%s[\'%s\'] is skipped: %s',
+                        $model::class,
+                        $relationType,
+                        $relationship,
+                        $e->getMessage(),
+                    ));
+                }
             }
         }
     }
 
     /**
-     * @param array<string, mixed> $config
-     * @return RelationshipModelConfigDto
-     * @throws IdeHelperException
+     * @param array{service: class-string<ModelRelationshipServiceInterface>, relationship_type: class-string} $config
      */
     private function getRelationshipModelConfigDto(array $config): RelationshipModelConfigDto
     {
-        $relationshipType = Arr::get($config, 'relationship_type');
-
-        if (!is_string($relationshipType) || empty($relationshipType)) {
-            throw new IdeHelperException('Relation type does not exist');
-        }
-
-        $service = Arr::get($config, 'service');
-
-        if (!is_string($service) || empty($service)) {
-            throw new IdeHelperException('Service does not exist');
-        }
-
-        $relationshipModelConfigDto = new RelationshipModelConfigDto(
-            Tools::getClassFormat($relationshipType),
-            $service,
-            (bool)Arr::get($config, 'read', true),
-            (bool)Arr::get($config, 'write', false),
-            (bool)Arr::get($config, 'nullable', true)
+        return new RelationshipModelConfigDto(
+            Tools::getClassFormat($config['relationship_type']),
+            $config['service'],
+            true,
+            false,
+            true,
         );
-
-        return $relationshipModelConfigDto;
     }
 
     /**
-     * @throws IdeHelperException
      * @throws BindingResolutionException
      */
-    private function getService(
-        RelationshipModelConfigDto $relationshipModelConfigDto
-    ): ModelRelationshipServiceInterface {
-        if (!class_exists($relationshipModelConfigDto->getService())) {
-            throw new IdeHelperException(
-                sprintf(
-                    'Service class %s does not exist',
-                    $relationshipModelConfigDto->getService()
-                )
-            );
-        }
-
+    private function getService(RelationshipModelConfigDto $relationshipModelConfigDto): ModelRelationshipServiceInterface
+    {
         /** @var ModelRelationshipServiceInterface $service */
         $service = $this->app->make($relationshipModelConfigDto->getService());
 
