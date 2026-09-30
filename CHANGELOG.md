@@ -2,6 +2,12 @@
 
 All notable changes to this package are documented here. The project follows [semantic versioning](https://semver.org/).
 
+## [2.2.1] - 2026-09-30
+
+### Changed
+
+- The Packagist page links to the documentation, the issues and the security policy, and the README's links work outside GitHub.
+
 ## [2.2.0] - 2026-09-30
 
 ### Fixed
