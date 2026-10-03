@@ -40,6 +40,10 @@ make ready          # all of the above
 | `src/Tools/Tools.php` | Class-name formatting, the related class of a definition, key column names, nullability; the only code that reaches into `ModelsCommand` through reflection. |
 | `tests/Fixtures/Models/` | October models covering every relation type, jsonable columns, a settings model and a plain Eloquent model; `tests/TestCase.php` creates their tables. |
 
+## Architecture
+
+The architecture skills in `.claude/skills/` apply where they fit a development tool: `application-layer` and `dependency-injection` (the hook only delegates to constructor-injected services; `Tools` keeps pure static helpers), `error-handling` (`IdeHelperException` for a model it cannot describe), `testing-architecture` and `plugin-boundaries` (the hook and the console behaviour are the public surface). The domain layer and events skills have nothing to apply to here.
+
 ## Compatibility rules
 
 - **Semver on the output.** A change that makes regenerated docblocks stricter or different (a type that loses `|null`, a new `@property`) is a minor version with a note in the release; fixing a docblock that did not match what October returns is a fix. Never change the output silently.
